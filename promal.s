@@ -11,6 +11,9 @@
 ;
 ; configuration section
 ;
+; NOTE: Not all of these are implemented yet.
+;       dyno switch is implemented in hal.s and tested on scpu+ide64.
+;
 ; -----------------------------------------------
 
 	dyno=	true		; set false to disable dyno
