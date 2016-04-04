@@ -584,6 +584,8 @@ g35CD   JSR hspcFin
         BCS g35CD
         INY 
         BCC g35CD
+
+	.if dyno = true
 sendcmd LDA hSerID
         JSR $FFB1    ;ROM_LISTEN - make SERIAL device listen        
         LDA #$6F
@@ -647,6 +649,8 @@ p364C   .BYTE $00
 ; 364e: drvcode: M-E 0300; 3653: M-E 0305; 3658: M-E 038d
 drvcmds .BYTE $00,$4D,$2D,$45,$00,$03,$4D,$2D
         .BYTE $45,$50,$03,$4D,$2D,$45,$59,$03
+	.fi ;dyno
+
 hcpyFN  STA Szl
         LDY #$00
 g3662   LDA FName,Y
@@ -681,6 +685,7 @@ s3691   LDA hSerID
         TAX 
         RTS 
 
+	.if dyno = true
 chkdyno LDA c64n1541
         BNE g36A9
         LDA c64dyno
@@ -695,6 +700,7 @@ g36A9   LDA DynoRdy
         JSR prepsend
 g36BA   CLC 
 g36BB   RTS 
+	.fi ;dyno
 
 setTfnam LDA tstopb
         LSR 
@@ -728,7 +734,9 @@ s36E8   JSR hcpyFN
         BNE g3749
 g3704   CMP #$25
         BNE g3711
+	.if dyno = true
         JSR chkdyno
+	.fi ;dyno
         JSR s3691
         JMP j3799
 
@@ -767,6 +775,7 @@ s374C   JSR setkrnnam
         BNE g375D
         LDY #$00
 g375D   JSR $FFBA    ;ROM_SETLFS - set file parameters              
+	.if dyno = true
         JSR chkdyno
         BCC g3779
         LDA DynoRdy
@@ -777,6 +786,7 @@ g375D   JSR $FFBA    ;ROM_SETLFS - set file parameters
 g3772   LDY #$0E
         LDX #$05
         JSR prepsend
+	.fi ;dyno
 g3779   JSR $FFC0    ;ROM_OPEN   - open log.file after SETLFS,SETNAM
         BCS g379C
         LDA kernST
@@ -1051,10 +1061,12 @@ g39B2   LDX hfileN
         LDA hKFHmap,X
         CMP #$23
         BEQ g39D4
+	.if dyno = true
         LDA c64dyno
         BEQ g39D4
         BIT DynoRdy
         BMI g3A1B
+	.fi ;dyno
 g39D4   LDY #$00
 g39D6   LDX hfileN
         CPX #$F0
@@ -1087,6 +1099,7 @@ g3A14   LDX hblksz
         LDY hblksz+1
         RTS 
 
+	.if dyno = true
 g3A1B   LDA Szh
         STA p364B
         LDA p0CBF
@@ -1181,6 +1194,7 @@ GetIECB JSR SetlIEC
         STA zFF
         BIT zFF
         RTS 
+	.fi ;dyno
 
 s3AD8   STX hfileN
         LDA #$00
@@ -2119,6 +2133,7 @@ p4238   .BYTE $00,$00,$00,$00,$00,$00,$00,$00
         .BYTE $00,$00,$00,$00,$00,$00,$00,$00
         .BYTE $00,$00,$00,$00,$00,$00,$00
 
+	.if dyno = true
 ; Drive-side fastloader code.  $FB bytes gets uploaded by code at $35fe
 drvcode1 =*
         .logical $0300
@@ -2261,6 +2276,7 @@ g434F   LDA $1800
         .here ; end of drive code
 
         .BYTE $00,$00,$00
+	.fi ;dyno
 
 ; $4267+$FB = 4362.  Drive code ends here
 p4362   .BYTE $00
